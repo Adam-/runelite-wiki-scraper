@@ -45,6 +45,7 @@ def getLimits():
 def run():
 	limits = getLimits()
 	stats = {}
+	examines = {}
 
 	item_pages = api.query_category("Items")
 	for name, page in item_pages.items():
@@ -89,6 +90,9 @@ def run():
 				if not "name" in doc:
 					doc["name"] = name
 
+				for id in util.get_ids(version):
+					examines[id] = {"name": name, "examine": version["examine"].strip()}
+
 				util.copy("quest", doc, version, lambda x: x.lower() != "no")
 
 				equipable = "equipable" in version and "yes" in str(version["equipable"]).strip().lower()
@@ -132,3 +136,4 @@ def run():
 			traceback.print_exc()
 
 	util.write_json("stats.json", "stats.ids.min.json", stats)
+	util.write_json("examines.json", "examines.min.json", examines)
